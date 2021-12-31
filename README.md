@@ -30,7 +30,7 @@ diegoaceneves/mysqldump                 latest    9b4725482522   8 months ago   
 
 ```
 
-### Running
+### Getting Dockerfile
 
 ```bash
 python3 dedockify.py 9b4725482522
