@@ -1,15 +1,27 @@
-from sys import argv
 import docker
+import argparse
 
 class ImageNotFound(Exception):
     pass
 
 class MainObj:
-    def __init__(self, base_url='unix://var/run/docker.sock'):
+    def __init__(self):
+        parser = argparse.ArgumentParser(description='Reverse Engineering on Docker Image')
+        parser.add_argument('-b','--base-url', default='unix://var/run/docker.sock', help='Base URL to Docker socket')
+        parser.add_argument('-i','--docker-image', default='', help='Docker Image ID')
+        args = parser.parse_args()
+        if args.base_url :
+            base_url=args.base_url
+        else:
+            base_url='unix://var/run/docker.sock'
+
+        if args.docker_image :
+            docker_image=args.docker_image            
+
         super(MainObj, self).__init__()
         self.commands = []
         self.cli = docker.APIClient(base_url=base_url)
-        self._get_image(argv[-1])
+        self._get_image(docker_image)
         self.hist = self.cli.history(self.img['RepoTags'][0])
         self._parse_history()
         self.commands.reverse()
