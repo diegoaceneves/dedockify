@@ -33,7 +33,27 @@ diegoaceneves/mysqldump                 latest    9b4725482522   8 months ago   
 ### Getting Dockerfile
 
 ```bash
-python3 dedockify.py 9b4725482522
+python3 dedockify.py -i 9b4725482522
+FROM diegoaceneves/mysqldump:latest
+ADD file:c855b3c65f5ba94d548d7d2659094eeb63fbf7f8419ac8e07712c3320c38b62c in /
+CMD ["bash"]
+RUN /bin/sh -c apt-get update \
+    && apt-get upgrade -y \
+    && apt-get install mariadb-client-10.3 bzip2  -y
+ENV DB_NAME=mysql
+ENV DB_USER=root
+ENV DB_PASS=pass
+ENV DB_HOST=localhost
+WORKDIR /backup
+CMD ["/bin/sh" "-c" "/usr/bin/mysqldump -h$DB_HOST -u$DB_USER -p$DB_PASS $DB_NAME > $DB_NAME.sql"]
+```
+
+### Running with a different docker socket
+
+By default, this script uses `unix://var/run/docker.sock` as docker socket file, if is necessary, can be used a different one passing by argument in execution time:
+
+```bash
+python3 dedockify.py -i 9b4725482522 -b unix://var/run/docker.sock
 FROM diegoaceneves/mysqldump:latest
 ADD file:c855b3c65f5ba94d548d7d2659094eeb63fbf7f8419ac8e07712c3320c38b62c in /
 CMD ["bash"]
