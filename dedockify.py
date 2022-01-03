@@ -5,10 +5,10 @@ class ImageNotFound(Exception):
     pass
 
 class MainObj:
-    def __init__(self):
+    def __init__(self, base_url='unix://var/run/docker.sock'):
         super(MainObj, self).__init__()
         self.commands = []
-        self.cli = docker.APIClient(base_url='unix://var/run/docker.sock')
+        self.cli = docker.APIClient(base_url=base_url)
         self._get_image(argv[-1])
         self.hist = self.cli.history(self.img['RepoTags'][0])
         self._parse_history()
